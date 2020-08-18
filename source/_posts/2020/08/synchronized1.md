@@ -65,4 +65,30 @@ categories:
 
 #### jol打印对象头
 
+{% codeblock lang:java %}
+// 偏向锁升级为轻量级锁
+public void testJol() throws InterruptedException {
+    String object = "object";
+    // 此时是无锁状态
+    System.out.println("master1:" + ClassLayout.parseInstance(object).toPrintable());
+    threadPoolExecutor.execute(() -> {
+        // 开辟新线程，仍是无锁状态
+        System.out.println("thread1-before:" + ClassLayout.parseInstance(object).toPrintable());
+        synchronized (object) {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            // 升级为轻量级锁
+            System.out.println("thread1:" + ClassLayout.parseInstance(object).toPrintable());
+        }
+    });
+    Thread.sleep(3000);
+    // thread1释放锁，还原到无锁状态
+    System.out.println("master2:" + ClassLayout.parseInstance(object).toPrintable());
+    Thread.sleep(10000);
+}
+{% endcodeblock%}
+
 ### 小结
