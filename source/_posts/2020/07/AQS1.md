@@ -39,7 +39,7 @@ protected final boolean compareAndSetState(int expect, int update) {
 
 ### FIFO队列
 
-  除了使用state表示同步状态，AQS还维护了一个FIFO队列来存储等待的线程信息，直到state==0，才会唤醒头节点的线程。
+  除了使用state表示同步状态，AQS还维护了一个FIFO队列来存储等待的线程信息。
 
 {% codeblock lang:java %}
 // 队列节点Node类
