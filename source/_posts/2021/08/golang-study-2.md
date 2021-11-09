@@ -36,6 +36,7 @@ categories:
 > 当虚部等于零时，这个复数可以视为实数；当z的虚部不等于零时，实部等于零时，常称z为纯虚数。
   
   定义方式如下：
+
 {% codeblock lang:go %}
 var complexNum complex64 = complex(1, 2)
 // complex的两个参数分别表示复数的实部与虚部，其类型都是用的float32类型
@@ -56,9 +57,11 @@ package builtin
 // not nil. Values of string type are immutable.
 type string string
 {% endcodeblock %}
+
   可以看到，string是一个8字节byte类型的集合，且与Java一样，string的值也是不可变的。
 
   然后看看string.go文件中的定义：
+
 {% codeblock lang:go %}
 const tmpStringBufSize = 32
 
@@ -68,6 +71,7 @@ type tmpBuf [tmpStringBufSize]byte
   佐证了builtin.go文件中的注释，其是一个byte类型的数组。
 
   下面看看string的用法示例：
+
 {% codeblock lang:go %}
   // 定义方式
   str1 := "123"
@@ -100,9 +104,10 @@ type tmpBuf [tmpStringBufSize]byte
 {% endcodeblock %}
 
 ##### strings包
-   
-   在刚开始用string会疑惑，类似Java中split()，subString()这些方法到哪去了呢？
-   go其实也提供了类似的方法，不过并不能像Java中一样直接用String类型的对象调用对应方法，而是定义了一个strings包。
+
+  在刚开始用string会疑惑，类似Java中split()，subString()这些方法到哪去了呢？
+  go其实也提供了类似的方法，不过并不能像Java中一样直接用String类型的对象调用对应方法，而是定义了一个strings包。
+
 {% codeblock lang:go %}
   str := "hello world"
   // 分割
@@ -122,7 +127,8 @@ type tmpBuf [tmpStringBufSize]byte
 
 ### 指针类型
 
-   golang不同于Java，有指针类型，但又不同于C语言，其指针是不参与运算的，下面看看基本用法的示例：
+  golang不同于Java，有指针类型，但又不同于C语言，其指针是不参与运算的，下面看看基本用法的示例：
+
 {% codeblock lang:go %}
   str := "aaa"
   point1 := &str
@@ -156,6 +162,7 @@ type tmpBuf [tmpStringBufSize]byte
 // i的地址：0xc00000a0f8，e的地址：0xc000006038;第3个指针元素：0xc00000a0e8;第3个元素：3
 // i的地址：0xc00000a0f8，e的地址：0xc000006038;第4个指针元素：0xc00000a0f0;第4个元素：4
 {% endcodeblock%}
+
   基本用法还是和C语言类似，通过&取地址，通过*取值。
   这里需要注意的是在for循环中定义的i或者使用range返回的i，e的地址都是不变的，如果有取地址赋值的操作需要注意。
   就像Java中for循环插入对象类型数据，因为没有重新new，所以集合里都是同一个实例的情况。
@@ -163,7 +170,9 @@ type tmpBuf [tmpStringBufSize]byte
 ### 数组与切片
 
 #### 数组
+
   go中的数组与Java差不多，都是长度固定的集合，使用示例如下：
+
 {% codeblock lang:go %}
 	// 数组声明方式
 	array := [5]int{1, 2, 3, 4, 5}
@@ -184,9 +193,11 @@ type tmpBuf [tmpStringBufSize]byte
 {% endcodeblock %}
 
 #### 切片
+
   go中的切片是个可以动态扩容的集合结构，其本质可以看作一个指向某段数组的指针。
   有点像是Java中ArrayList的定位。
   首先看看切片的定义：
+
 {% codeblock lang:go %}
 type slice struct {
 	array unsafe.Pointer
@@ -194,9 +205,11 @@ type slice struct {
 	cap   int
 }
 {% endcodeblock %}
+
   从切片的定义上看，他是一个包含指针和当前长度和最大容量信息的结构体。
   其中指针指向某个数组，len和cap分别维护切片当前长度和最大容量。
   切片的声明有两种，一种是指向已有的数组，一种是使用make方法声明。
+
 {% codeblock lang:go %}
 	array := [5]int{1, 2, 3, 4, 5}
 	// 指向某个数组的切片
@@ -250,7 +263,9 @@ type slice struct {
    使用make初始化切片可以指定len和cap，当然在不确定cap的情况下可以不指定，不过指定cap可以减少扩容次数，效率更高。
 
 ### map
-   go中的map概念上没有什么不同，其具体用法如下：
+
+  go中的map概念上没有什么不同，其具体用法如下：
+
 {% codeblock lang:go %}
 	mapInt := make(map[string]string, 0)
 	mapInt["0"] = "hello"
@@ -269,6 +284,7 @@ type slice struct {
 // 是否取到值：true,值为:hello
 // 是否取到值：false,值为:
 {% endcodeblock %}
+
   同样是使用make方法初始化，只是类型参数指定的是map类型，然后没有切片的cap参数。
   另外，取值方法可以返回一个bool类型表示是否取到值的标识。
   这是因为int，string等数据类型的默认值不是nil，当map中不存在对应key的值时，返回的是对应数据类型的默认值，
@@ -276,3 +292,149 @@ type slice struct {
   而map其他的取值赋值甚至for循环range等操作上不能说和数组切片类似，只能说一摸一样，这也体现了go语法简化的特点。
    
 ### 结构体
+
+   结构体也是golang中的基本类型，定位上可以对标Java的class，但却有很多不同点。
+
+#### 定义
+
+{% codeblock lang:go %}
+type demo struct {
+	Hello       func(int) int
+	textPrivate string
+	TextPublic  string
+	Number      int32
+	Pointer     *int32
+	MyDemo      *demo
+	emptyAttr   empty
+	emptyPoint  *empty
+}
+
+type empty struct {
+}
+{% endcodeblock %}
+  结构体的属性类型可以是int，string这种基本类型，也可以是一个函数，当然也包括其他的结构体或其指针类型。
+  但是要注意的是，结构体可以有自身指针类型的属性，但不能包含自身，如上述例子中的MyDemo属性，就不能是demo类型。
+  与Java中的class相比，结构体有很多相似的地方，但没有class那么大而重。
+  在Java中通常一个class就是一个文件，而结构体显得更加小巧灵活，一个文件中可以定义多个结构体。
+  同时结构体中虽然有函数类型的属性，但与class中的定义的方法不同，其定义时是没有具体的方法实现，也因此让
+  结构体显得更加精简。
+
+#### 初始化
+
+{% codeblock lang:go %}
+func main() {
+	// 初始化空结构体
+	var l empty
+	fmt.Printf("空结构体：%v\n", l)
+	// 初始化结构体
+	var num int32 = 2
+	ss := demo{
+		Hello: func(r int) int {
+			fmt.Printf("结构体函数属性输出--%v\n", r)
+			return 1
+		},
+		textPrivate: "private text；",
+		TextPublic:  "public text；",
+		Number:      1111,
+		Pointer:     &num,
+		MyDemo:      &demo{TextPublic: "child~~"},
+		emptyAttr:   empty{},
+		emptyPoint:  &empty{},
+	}
+	fmt.Printf("结构体：%v\n", ss)
+	hello := ss.Hello
+	hello(1)
+	// 访问公有属性
+	fmt.Printf("公有属性:%v\n", ss.TextPublic)
+	// 访问私有属性
+	fmt.Printf("私有属性:%v\n", ss.textPrivate)
+	// 访问结构体属性
+	fmt.Printf("结构体属性：%v,树状访问：%v\n", ss.MyDemo, ss.MyDemo.TextPublic)
+}
+
+type demo struct {
+	Hello       func(int) int
+	textPrivate string
+	TextPublic  string
+	Number      int32
+	Pointer     *int32
+	MyDemo      *demo
+	emptyAttr   empty
+	emptyPoint  *empty
+}
+
+type empty struct {
+}
+// 结果输出：
+// 空结构体：{}
+// 结构体：{0x1219ec0 private text； public text； 1111 0xc000019954 0xc000079cc0 {} 0x147d740}
+// 结构体函数属性输出--1
+// 公有属性:public text；
+// 私有属性:private text；
+// 结构体属性：&{<nil>  child~~ 0 <nil> <nil> {} <nil>},树状访问：child~~
+{% endcodeblock %}
+
+#### 访问控制
+
+  Java中class为了安全有访问权限关键字来控制对类属性及方法的访问，golang同样简化了这一部分，直接通过属性名的
+  首字母大小来区分包内访问还是公有制访问(golang中只有这两种访问权限)。
+  当首字母为小写时，只能在包内访问；相反为大写时则任何地方都能访问。
+  (这种规则不仅适用于结构体的属性，也适用于结构体本身，包括定义的函数，常量等)
+
+#### Tag
+
+{% codeblock lang:go %}
+type demo struct {
+	Hello       func(int) int `json:"hello"`
+	TextPublic  string        `json:"text_public"`
+	Number      int32         `json:"number"`
+	Pointer     *int32        `json:"pointer"`
+	MyDemo      *demo         `json:"my_demo"`
+}
+{% endcodeblock %}
+  在定义结构体时可以在行尾使用``符号定义一个tag，其作用是标识一些信息，如上例中标识出每个属性转json的key值。
+  (对私有属性定义json的tag会报警告：Struct field 'XXXX' has 'json' tag but is not exported ）
+
+#### 匿名属性
+
+  结构体中不设置属性名，直接指定类型的属性叫做匿名属性。
+  这种属性的属性名由他的类型决定，比如：一个string类型的匿名属性，他的属性名就是string。
+  另外，如果匿名属性是一个结构体类型，可以跳过中间的结构体名称直接访问其属性。示例如下：
+
+{% codeblock lang:go %}
+type Demo struct {
+	other
+	string
+	int
+}
+
+type other struct {
+	Name string
+	age int
+}
+
+func test() {
+	demo := Demo{}
+	demo.other.Name = "jjj"
+	demo.Name = "xxx"
+	demo.string = "ddd"
+	demo.int = 1
+}
+{% endcodeblock %}
+
+  这里比较特殊的一点是：当匿名属性为结构体类型且其属性为公有属性(如例子中的other的Name属性)，虽然匿名属性首字
+  母小写，无法包外访问，但是仍然可以访问到其公有属性。
+
+{% codeblock lang:go %}
+func main() {
+	ss := model.Demo{}
+	ss.Name = "jjj"
+	fmt.Printf("匿名属性的公有属性：%v\n", ss.Name)
+}
+{% endcodeblock %}
+
+### 总结
+  
+    golang的数据类型大致介绍到这里，可以看到基本类型部分包括string与Java的区别不太大。
+    有比较大不同的是与class定位类似的结构体部分，放弃了继承实现这种关系结构，使其更加精简灵活，也符合golang的特点。
+    另外虽然没有继承实现，但可以使用组合的方式变相实现这种依赖关系。
