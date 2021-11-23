@@ -264,7 +264,40 @@ type slice struct {
 
 ### map
 
-  go中的map概念上没有什么不同，其具体用法如下：
+  go中的map概念上没有什么不同，先看看源码中的定义：
+
+{% codeblock lang:go %}
+// A header for a Go map.
+type hmap struct {
+	// Note: the format of the hmap is also encoded in cmd/compile/internal/gc/reflect.go.
+	// Make sure this stays in sync with the compiler's definition.
+	count     int // # live cells == size of map.  Must be first (used by len() builtin)
+	flags     uint8
+	B         uint8  // log_2 of # of buckets (can hold up to loadFactor * 2^B items)
+	noverflow uint16 // approximate number of overflow buckets; see incrnoverflow for details
+	hash0     uint32 // hash seed
+
+	buckets    unsafe.Pointer // array of 2^B Buckets. may be nil if count==0.
+	oldbuckets unsafe.Pointer // previous bucket array of half the size, non-nil only when growing
+	nevacuate  uintptr        // progress counter for evacuation (buckets less than this have been evacuated)
+
+	extra *mapextra // optional fields
+}
+// mapextra holds fields that are not present on all maps.
+type mapextra struct {
+	overflow    *[]*bmap
+	oldoverflow *[]*bmap
+
+	nextOverflow *bmap
+}
+// A bucket for a Go map.
+type bmap struct {
+	tophash [bucketCnt]uint8
+}
+{% endcodeblock %}
+  
+  与slice类似，定义了一个结构体封装了map的相关信息。可以看到结构设计上与Java的类似，采用的也是拉链法的设计思想。
+  这里不详细解析，直接看看其具体用法：
 
 {% codeblock lang:go %}
 	mapInt := make(map[string]string, 0)
