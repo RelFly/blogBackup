@@ -43,7 +43,7 @@ categories:
 
     常规方案只适合于redis单点部署的情况，就如方案二中提到的，若redis存在多个节点就可能因为主节点挂掉
     且锁信息未及时复制到从节点而导致锁失效。
-    所幸，redis提供了解决这种问题的方案，那就是Redlock算法
+    所幸，redis提供了解决这种问题的方案，那就是Redlock算法。
 
 #### 算法思路
 
@@ -120,7 +120,7 @@ public class RedissonLock extends RedissonExpirable implements RLock {
 // 锁释放的逻辑
 protected RFuture<Boolean> unlockInnerAsync(long threadId) {
     return commandExecutor.evalWriteAsync(getName(), LongCodec.INSTANCE, RedisCommands.EVAL_BOOLEAN,
-    		// 锁不存在，发布unlockMessage消息
+    	    // 锁不存在，发布unlockMessage消息
             "if (redis.call('exists', KEYS[1]) == 0) then " +
                 "redis.call('publish', KEYS[2], ARGV[1]); " +
                 "return 1; " +
