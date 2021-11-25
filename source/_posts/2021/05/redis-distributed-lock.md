@@ -226,7 +226,7 @@ public boolean tryLock(long waitTime, long leaseTime, TimeUnit unit) throws Inte
                 // 设置等待时间
                 long awaitTime = unit.convert(remainTime, TimeUnit.MILLISECONDS);
                 // 实际调用RedissonLock的tryLock方法
-                // 当获取锁后的时间点与初识时间点的差小于awaitTime 便视作获取锁失败
+                // 当获取锁后的时间点与初始时间点的差大于awaitTime 便视作获取锁失败
                 lockAcquired = lock.tryLock(awaitTime, newLeaseTime, unit);
             }
         } catch (Exception e) {
