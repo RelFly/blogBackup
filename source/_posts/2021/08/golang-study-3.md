@@ -129,17 +129,15 @@ func main() {
 {% codeblock lang:go %}
 // A header for a Go map.
 type hmap struct {
-	// Note: the format of the hmap is also encoded in cmd/compile/internal/gc/reflect.go.
-	// Make sure this stays in sync with the compiler's definition.
-	count     int // # live cells == size of map.  Must be first (used by len() builtin)
+	count     int
 	flags     uint8
-	B         uint8  // log_2 of # of buckets (can hold up to loadFactor * 2^B items)
-	noverflow uint16 // approximate number of overflow buckets; see incrnoverflow for details
-    hash0     uint32 // hash seed
-    buckets    unsafe.Pointer // array of 2^B Buckets. may be nil if count==0.
-	oldbuckets unsafe.Pointer // previous bucket array of half the size, non-nil only when growing
-	nevacuate  uintptr        // progress counter for evacuation (buckets less than this have been evacuated)
-	extra *mapextra // optional fields
+	B         uint8
+	noverflow uint16
+	hash0     uint32
+	buckets    unsafe.Pointer
+	oldbuckets unsafe.Pointer
+	nevacuate  uintptr      
+	extra *mapextra
 }
 // mapextra holds fields that are not present on all maps.
 type mapextra struct {
