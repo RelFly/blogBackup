@@ -174,18 +174,18 @@ type tmpBuf [tmpStringBufSize]byte
   go中的数组与Java差不多，都是长度固定的集合，使用示例如下：
 
 {% codeblock lang:go %}
-	// 数组声明方式
-	array := [5]int{1, 2, 3, 4, 5}
-	// array1 := [...]int{1,2,3} 以元素数量为数组长度，不用指定
-	// 声明空数组
-	arrayEmpty := [5]int{}
+// 数组声明方式
+array := [5]int{1, 2, 3, 4, 5}
+// array1 := [...]int{1,2,3} 以元素数量为数组长度，不用指定
+// 声明空数组
+arrayEmpty := [5]int{}
 
-	fmt.Println(array)
-	for i := 0; i < 3; i++ {
-		arrayEmpty[i] = array[i]
-	}
-	// 未设值的元素用默认值填充
-	fmt.Println(arrayEmpty)
+fmt.Println(array)
+for i := 0; i < 3; i++ {
+	arrayEmpty[i] = array[i]
+}
+// 未设值的元素用默认值填充
+fmt.Println(arrayEmpty)
 
 // 结果输出：
 // [1 2 3 4 5]
@@ -211,21 +211,21 @@ type slice struct {
   切片的声明有两种，一种是指向已有的数组，一种是使用make方法声明。
 
 {% codeblock lang:go %}
-	array := [5]int{1, 2, 3, 4, 5}
-	// 指向某个数组的切片
-	sliceFromArray := array[2:4]
-	fmt.Printf("修改前:%v\n", sliceFromArray)
-	// 对数组的修改会影响切片的值
-	array[3] = 99
-	fmt.Printf("修改后：%v\n", sliceFromArray)
-	fmt.Printf("切片的len：%v，cap：%v\n", len(sliceFromArray), cap(sliceFromArray))
-	// 对切片的操作，如果是指向数组的部分则会修改愿数组的值
-	sliceFromArray = append(sliceFromArray, 98)
-	sliceFromArray = append(sliceFromArray, 97)
-	sliceFromArray = append(sliceFromArray, 96)
-	fmt.Printf("append后的切片：%v\n", sliceFromArray)
-	fmt.Printf("append后的数组:%v\n", array)
-	fmt.Printf("切片的len：%v，cap：%v\n", len(sliceFromArray), cap(sliceFromArray))
+array := [5]int{1, 2, 3, 4, 5}
+// 指向某个数组的切片
+sliceFromArray := array[2:4]
+fmt.Printf("修改前:%v\n", sliceFromArray)
+// 对数组的修改会影响切片的值
+array[3] = 99
+fmt.Printf("修改后：%v\n", sliceFromArray)
+fmt.Printf("切片的len：%v，cap：%v\n", len(sliceFromArray), cap(sliceFromArray))
+// 对切片的操作，如果是指向数组的部分则会修改愿数组的值
+sliceFromArray = append(sliceFromArray, 98)
+sliceFromArray = append(sliceFromArray, 97)
+sliceFromArray = append(sliceFromArray, 96)
+fmt.Printf("append后的切片：%v\n", sliceFromArray)
+fmt.Printf("append后的数组:%v\n", array)
+fmt.Printf("切片的len：%v，cap：%v\n", len(sliceFromArray), cap(sliceFromArray))
 // 结果输出：
 // 修改前:[3 4]
 // 修改后：[3 99]
@@ -238,20 +238,20 @@ type slice struct {
   特别需要注意的是，像上述示例中一样，对切片使用append方法时，如果元素下标仍在数组长度范围内，也会改变数组的值。
   使用make方法初始化切片则没有这种烦恼，因为是重新开辟一个空间：
 {% codeblock lang:go %}
-	// make方法初始化切片，参数分别是切片类型和切片的len，cap
-	sliceByMake := make([]int, 2, 6)
-	fmt.Printf("make初始化切片的len：%v，cap：%v\n", len(sliceByMake), cap(sliceByMake))
-	sliceByMake = append(sliceByMake, 3)
-	// make初始化长度对应的元素会用默认值填充，append会接着塞入，而不是从下标0开始
-	fmt.Printf("sliceByMake:%v\n", sliceByMake)
-	fmt.Printf("make初始化切片的len：%v，cap：%v\n", len(sliceByMake), cap(sliceByMake))
-	// 也可以不指定cap
-	sliceByMakeNoCap := make([]int, 2)
-	fmt.Printf("不指定cap的make初始化切片的len：%v，cap：%v\n", len(sliceByMakeNoCap), cap(sliceByMakeNoCap))
-	sliceByMakeNoCap = append(sliceByMakeNoCap, 3)
-	// make初始化长度对应的元素会用默认值填充，append会接着塞入，而不是从下标0开始
-	fmt.Printf("sliceByMakeNoCap:%v\n", sliceByMakeNoCap)
-	fmt.Printf("不指定cap的make初始化切片的len：%v，cap：%v\n", len(sliceByMakeNoCap), cap(sliceByMakeNoCap))
+// make方法初始化切片，参数分别是切片类型和切片的len，cap
+sliceByMake := make([]int, 2, 6)
+fmt.Printf("make初始化切片的len：%v，cap：%v\n", len(sliceByMake), cap(sliceByMake))
+sliceByMake = append(sliceByMake, 3)
+// make初始化长度对应的元素会用默认值填充，append会接着塞入，而不是从下标0开始
+fmt.Printf("sliceByMake:%v\n", sliceByMake)
+fmt.Printf("make初始化切片的len：%v，cap：%v\n", len(sliceByMake), cap(sliceByMake))
+// 也可以不指定cap
+sliceByMakeNoCap := make([]int, 2)
+fmt.Printf("不指定cap的make初始化切片的len：%v，cap：%v\n", len(sliceByMakeNoCap), cap(sliceByMakeNoCap))
+sliceByMakeNoCap = append(sliceByMakeNoCap, 3)
+// make初始化长度对应的元素会用默认值填充，append会接着塞入，而不是从下标0开始
+fmt.Printf("sliceByMakeNoCap:%v\n", sliceByMakeNoCap)
+fmt.Printf("不指定cap的make初始化切片的len：%v，cap：%v\n", len(sliceByMakeNoCap), cap(sliceByMakeNoCap))
 // 结果输出:
 // make初始化切片的len：2，cap：6
 // sliceByMake:[0 0 3]
@@ -300,18 +300,18 @@ type bmap struct {
   这里不详细解析，直接看看其具体用法：
 
 {% codeblock lang:go %}
-	mapInt := make(map[string]string, 0)
-	mapInt["0"] = "hello"
-	for i, v := range mapInt {
-		fmt.Printf("map_key:%v,map_value:%v\n", i, v)
-	}
-  // 取值方法
-	value := mapData["0"]
-	fmt.Printf("map_value:%v\n", value)
-	value, ok := mapData["0"]
-	fmt.Printf("是否取到值：%v,值为:%v\n", ok, value)
-	value, ok = mapData["1"]
-	fmt.Printf("是否取到值：%v,值为:%v\n", ok, value)
+mapInt := make(map[string]string, 0)
+mapInt["0"] = "hello"
+for i, v := range mapInt {
+	fmt.Printf("map_key:%v,map_value:%v\n", i, v)
+}
+ // 取值方法
+value := mapData["0"]
+fmt.Printf("map_value:%v\n", value)
+value, ok := mapData["0"]
+fmt.Printf("是否取到值：%v,值为:%v\n", ok, value)
+value, ok = mapData["1"]
+fmt.Printf("是否取到值：%v,值为:%v\n", ok, value)
 // 结果输出：
 // map_key:0,map_value:hello
 // 是否取到值：true,值为:hello
