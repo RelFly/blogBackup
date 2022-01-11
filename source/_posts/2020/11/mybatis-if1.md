@@ -4,6 +4,7 @@ date: 2020-11-11 22:49:43
 tags:
 - MyBatis
 categories:
+- ORM
 - MyBatis
 ---
 
