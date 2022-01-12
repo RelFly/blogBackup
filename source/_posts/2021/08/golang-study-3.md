@@ -395,3 +395,6 @@ func main() {
 	golang的函数与Java的方法在声明定义，参数传递上都比较相似，很容易理解。
 	不过因为没有Java中class，继承，实现这些概念，所以golang中的方法和接口就与Java的大不一样。
 	不过从使用上来来看，这种设计确实更加简单灵活，没有Java那么紧密耦合的关系。
+
+### 下一章
+> [Go学习笔记-for和range](https://rel-fly.com/2021/12/03/golang-study-4/)
