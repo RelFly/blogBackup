@@ -220,9 +220,7 @@ array[3] = 99
 fmt.Printf("修改后：%v\n", sliceFromArray)
 fmt.Printf("切片的len：%v，cap：%v\n", len(sliceFromArray), cap(sliceFromArray))
 // 对切片的操作，如果是指向数组的部分则会修改愿数组的值
-sliceFromArray = append(sliceFromArray, 98)
-sliceFromArray = append(sliceFromArray, 97)
-sliceFromArray = append(sliceFromArray, 96)
+sliceFromArray = append(sliceFromArray, 98, 97, 96)
 fmt.Printf("append后的切片：%v\n", sliceFromArray)
 fmt.Printf("append后的数组:%v\n", array)
 fmt.Printf("切片的len：%v，cap：%v\n", len(sliceFromArray), cap(sliceFromArray))
