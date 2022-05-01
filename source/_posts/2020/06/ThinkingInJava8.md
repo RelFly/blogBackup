@@ -10,8 +10,8 @@ categories:
 
 ### 前言
 
-  String应该是Java中较为特殊的对象。一方面他的使用场景非常多，其丰富的方法使得String类型的数据非常容易
-  处理。另一方面，他的不可变的特性也让其区分于其他对象。怎么理解String的不可变，以及他与StringBuilder和StringBuffer的区别等问题也是在面试中会问到的问题。
+  String应该是Java中较为特殊的对象。一方面他的使用场景非常多，其丰富的方法使得String类型的数据非常容易处理。
+  另一方面，他的不可变的特性也让其区别于其他对象。怎么理解String的不可变，以及他与StringBuilder和StringBuffer的区别等问题也是在面试中会问到的问题。
 <!-- more -->
 
 
