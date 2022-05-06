@@ -36,7 +36,7 @@ err := db.Model(user).Where("id = ?", user.Id).Find(&user).Error
   不同点在于Model方法的入参是我们定义的模型结构体，按照约定用结构体名的蛇形命名复数形式或者其实现的TableName方法返回值作为sql的表名。
   Table的入参则是一个字符串，直接用这个字符串作为表名。
 {% codeblock lang:go %}
-// 后文的例子皆使用该结构体
+// 后文的例子无特别说明皆使用该结构体
 type UserInfo struct {
     Id   int64
     Name string
@@ -130,16 +130,16 @@ db.Model(&user).Offset(1).Limit(2).Find(&users)
 {% codeblock lang:go %}
 // 通用分页方法
 func paginate(pageNum, pageSize int) func(db *gorm.DB) *gorm.DB {
-	return func(db *gorm.DB) *gorm.DB {
-		if pageNum < 1 {
-			pageNum = 1
-		}
-		if pageSize < 0 || pageSize > 50 {
-			pageSize = 50
-		}
-		offset := (pageNum - 1) * pageSize
-		return db.Offset(offset).Limit(pageSize)
-	}
+    return func(db *gorm.DB) *gorm.DB {
+        if pageNum < 1 {
+            pageNum = 1
+        }
+        if pageSize < 0 || pageSize > 50 {
+            pageSize = 50
+        }
+        offset := (pageNum - 1) * pageSize
+        return db.Offset(offset).Limit(pageSize)
+    }
 }
 db.Model(&user).Scopes(gormDb.Paginate(2, 3)).Find(&users)
 // sql:SELECT * FROM user LIMIT 3 OFFSET 3
@@ -155,7 +155,7 @@ db.Model(&user).Scopes(gormDb.Paginate(2, 3)).Find(&users)
 
 #### Create/CreateInBatches
 
-  Create根据入参类型创建单条或者多条数据，CreateInBatches是批量创建数据，不同的是他的入参可以限制每一批插入的量
+  Create根据入参类型创建单条或者多条数据，CreateInBatches是批量创建数据，不同的是他的入参可以限制每一批插入的量。
 
 {% codeblock lang:go %}
 user := gormDb.User{
@@ -219,12 +219,12 @@ db.Save(&users)
 
   Save方法的入参可以是结构体也可以是切片，执行的sql不一样但是最终效果是一样的。
   这里要注意的是，如果结构体的某个字段没有赋值，Save时会自动为其设置零值参与sql的执行。
-  在做更新的时候需要注意，没有赋值可能会错误的将不应更新的字段设置为零值。
+  在做更新的时候，没有赋值可能会错误的将不应更新的字段更新为零值。
 
 #### First/Take/Last
 
   First,Take,Last三个方法都是查询单条数据的，不同点在于First，Last会根据主键排序，Take则不指定排序。
-  另外，需要注意的，这三个方法查不到数据时，会抛出ErrNotFound错误。
+  另外，需要注意，这三个方法查不到数据时，会抛出ErrNotFound错误。
 
 {% codeblock lang:go %}
 db.First(&user)
@@ -259,3 +259,94 @@ db.FindInBatches(&users, 10, func(tx *gorm.DB, batch int) error {
   最后需要注意的是，FindInBAtches会一直执行select直到某次查询结果行数小于batchSize时才会结束，所以他无法用于类似分页的查询场景。
 
 #### Update/Updates/UpdateColumn/UpdateColumns
+
+  Update用于更新单个字段，而且必须有where条件，否则会返回ErrMissingWhereClause错误。
+  Updates用于更新多个字段，入参可以是结构体也可以是map类型，当是结构体时，只会更新非零值的字段。
+  UpdateColumn，UpdateColumns与Update，Updates用法一致，不同点在于前者不会出发Hook方法，且不会自动为更新时间赋值。
+
+{% codeblock lang:go %}
+// 为了区分两者的区别，这里加上更新时间字段
+type UserInfo struct {
+    Id   int64
+    Name string
+    Age  int32
+    UpdatedAt time.Time
+}
+user := gormDb.User{}
+
+// 不附加where条件(包括mdel没有主键)的情况
+db.Model(&user).Update("name", "33")
+// sql: UPDATE user SET name='33',updated_at='2022-05-05 17:23:25.672'
+// err: WHERE conditions required
+
+// 正常使用的例子
+db.Model(&user).Where("name like ?", "%p%").Update("name", "33")
+// sql: UPDATE user SET name='33',updated_at='2022-05-06 14:34:14.455' WHERE name like '%p%'
+user.id = 1
+db.Model(&user).Update("name", "33")
+// sql: UPDATE user SET name='33',updated_at='2022-05-06 14:35:02.652' WHERE id = 1
+
+// UpdateColumn和Update一样，也需要附加where条件，这里看看他与Update的不同点
+db.Model(&user).UpdateColumn("name", "33")
+// sql: UPDATE user SET name='33' WHERE id = 1
+{% endcodeblock %}
+
+  可以从例子中看到，只要附带了条件，无论是model中主键信息不为空还是附加了where条件都能正常执行Update方法，否则会抛出错误信息。
+  另外，可以看到，这里Update会自动更新updated_at字段，UpdateColumn则不会。
+
+{% codeblock lang:go %}
+user := gormDb.User{}
+user.Name = "test_updates"
+db.Model(&user).Where("name like ?", "%l%").Updates(&user)
+// sql: UPDATE user SET name='test_updates',updated_at='2022-05-06 15:32:36.804' WHERE name like '%l%'
+
+updateMap := make(map[string]interface{})
+updateMap["name"] = ""
+updateMap["age"] = 0
+db.Model(&user).Where("age = ?", 11).Updates(updateMap)
+// sql: UPDATE user SET age=0,name='',updated_at='2022-05-06 15:43:06.481' WHERE age = 11
+{% endcodeblock %}
+
+  Updates可以更新多个字段，其入参类型struct和map的区别是，struct入参不会更新零值的字段，map入参可以。
+  UpdateColumns这里就不再演示了，与Updates的区别如上所说不会触发Hook方法及追踪更新时间。
+
+#### Row/Rows/Scan/ScanRows
+
+  Row，Rows方法可以再没有定义模型的情况下获取查询结果。
+  Scan，ScanRows方法则是用来从Row，Rows中取出结果。
+
+{% codeblock lang:go %}
+row := db.Table("user").Select("name,age").Row()
+name := ""
+age := 0
+err := row.Scan(&name, &age)
+fmt.Printf("result:%v,%v,err:%v", name, age, err)
+rows, err := db.Table("user").Select("name,age").Rows()
+if err != nil {
+    return
+}
+defer rows.Close()
+for rows.Next() {
+    err := rows.Scan(&name, &age)
+    fmt.Printf("result1:%v,%v,err:%v\n", name, age, err)
+    user := gormDb.User{}
+    err = db.ScanRows(rows, &user)
+    fmt.Printf("result2:%v,err:%v\n", user, err)
+    // 其他业务逻辑
+}
+{% endcodeblock %}
+
+#### Pluck
+
+  Pluck用于查询单个字段信息。
+{% codeblock lang:go %}
+var names []string
+// 下面两个操作效果一样
+db.Model(&user).Pluck("name", &names)
+db.Model(user).Select("name").Find(&names)
+{% endcodeblock %}
+
+### 总结
+
+    以上，就是gorm中比较常用的一些方法，基本涵盖了日常开发中增删查改的需求。
+    使用时需要注意链式方法必须在Finisher方法之前才有效，还有update零值更新的问题。
