@@ -14,7 +14,6 @@ categories:
 <!-- more -->
 
 ### channel
-
+    空
 ### select
-
-{% img  /image/xxxx/xxxxx.png  '"xxxx"' %}
+    空

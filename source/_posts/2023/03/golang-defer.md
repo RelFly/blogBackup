@@ -11,4 +11,4 @@ categories:
 ### 前言
 <!-- more -->
 
-{% img  /image/xxxx/xxxxx.png  '"xxxx"' %}
+ 空
