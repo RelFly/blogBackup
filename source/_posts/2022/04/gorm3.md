@@ -245,7 +245,7 @@ db.Find(&users)
 // sql: SELECT * FROM user
 db.FindInBatches(&users, 10, func(tx *gorm.DB, batch int) error {
     for _, e := range users {
-        / 批量处理找到的记录
+        // 批量处理找到的记录
         fmt.Printf("element:%v\n", e)
     }
     return nil
