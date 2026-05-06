@@ -77,7 +77,7 @@ type tmpBuf [tmpStringBufSize]byte
   str1 := "123"
   var str2 = "one two three"
   // 以数组的形式遍历
-  for _ , e := range str1 {
+  for _, e := range str1 {
     fmt.Printf("%d,%q\n", e, e)
   }
   for i , _ := range str2 {
@@ -304,11 +304,11 @@ for i, v := range mapInt {
 	fmt.Printf("map_key:%v,map_value:%v\n", i, v)
 }
  // 取值方法
-value := mapData["0"]
+value := mapInt["0"]
 fmt.Printf("map_value:%v\n", value)
-value, ok := mapData["0"]
+value, ok := mapInt["0"]
 fmt.Printf("是否取到值：%v,值为:%v\n", ok, value)
-value, ok = mapData["1"]
+value, ok = mapInt["1"]
 fmt.Printf("是否取到值：%v,值为:%v\n", ok, value)
 // 结果输出：
 // map_key:0,map_value:hello

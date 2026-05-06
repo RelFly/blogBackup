@@ -22,7 +22,7 @@ categories:
 {% codeblock lang:go %}
 var status int32
 err := db.WithContext(ctx).Model(&MyModel{}).Select("status").
-          Where("id = ?", id), sdkId).Find(&status).Error
+          Where("id = ? AND sdk_id = ?", id, sdkId).Find(&status).Error
 {% endcodeblock %}
 
   测试结果这里查不到数据，找到日志发现sql是正常打印出来了，但是显示没查到结果。

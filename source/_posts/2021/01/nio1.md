@@ -100,7 +100,7 @@ public void testNioServer() throws IOException {
                 // limit表示缓冲区内能读到的最大大小
                 byte[] content = new byte[readBuffer.limit()];
                 readBuffer.get(content);
-                logger.info("读取内容：{}", new String(content
+                logger.info("读取内容：{}", new String(content));
                 // 响应
                 String msg = "收到了：" + currentChannel.getRemoteAddress();
                 ByteBuffer responseBuffer = ByteBuffer.wrap(msg.getBytes());

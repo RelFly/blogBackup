@@ -79,7 +79,7 @@ categories:
 
 #### 示意图
 
-  {% img  /image/HTTP/http-request3.png  '"三次握手"' %}
+  {% img  /image/HTTP/http-request3.png  '"四次挥手"' %}
 
 #### 何时断开
 

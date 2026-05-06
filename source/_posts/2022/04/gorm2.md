@@ -89,8 +89,8 @@ type Model struct {
 type User struct {
     CreatedTime time.Time `gorm:"autoCreateTime"`       // 在创建时，如果该字段值为零值，则使用当前时间填充
     Created     int64     `gorm:"autoCreateTime"`       // 使用时间戳秒数填充创建时间
-    Updated     int64     `gorm:"autoUpdateTime:nano"`  // 使用时间戳纳秒数填充更新时间
-    Updated     int64     `gorm:"autoUpdateTime:milli"` // 使用时间戳毫秒数填充更新时间
+    UpdatedNano int64     `gorm:"autoUpdateTime:nano"`  // 使用时间戳纳秒数填充更新时间
+    UpdatedMilli int64    `gorm:"autoUpdateTime:milli"` // 使用时间戳毫秒数填充更新时间
 }
 {% endcodeblock %}
 

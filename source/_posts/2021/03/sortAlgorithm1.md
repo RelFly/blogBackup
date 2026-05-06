@@ -141,7 +141,7 @@ private int getMiddle(List<Integer> sortList, int start, int end) {
 private void mergeSort(List<Integer> mergeList) {
     List<Integer> tempList;
     int size = mergeList.size();
-    for (int space = 1; space < size; space * = 2) {
+    for (int space = 1; space < size; space *= 2) {
         tempList = Lists.newArrayListWithCapacity(mergeList.size());
         for (int start = 0; start < size; start += space * 2) {
             // 分为两个有序序列 start-mid   mid-high

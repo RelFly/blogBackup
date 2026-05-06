@@ -135,21 +135,22 @@ public void linkedHashMapTest() {
 
 {% codeblock lang:java %}
 // 按照访问顺序
-public void linkedHashMapTest() {
+public void linkedHashMapTest2() {
     LinkedHashMap<Integer, Integer> linkedHashMap1 = new LinkedHashMap<>(16, (float) 0.75, true);
-    linkedHashMap.put(1, 1);
-    linkedHashMap.put(2, 2);
-    linkedHashMap.put(22, 22);
-    for (Integer key : set) {
-        logger.info("key1:{}", key);
+    Set<Integer> set1 = linkedHashMap1.keySet();
+    linkedHashMap1.put(1, 1);
+    linkedHashMap1.put(2, 2);
+    linkedHashMap1.put(22, 22);
+    for (Integer key : set1) {
+        logger.info("key:{}", key);
     }
     linkedHashMap1.get(2);
-    for (Integer key : set) {
-        logger.info("key2:{}", key);
+    for (Integer key : set1) {
+        logger.info("key1:{}", key);
     }
     linkedHashMap1.get(22);
-    for (Integer key : set) {
-        logger.info("key3:{}", key);
+    for (Integer key : set1) {
+        logger.info("key2:{}", key);
     }
 }
 {% endcodeblock %}

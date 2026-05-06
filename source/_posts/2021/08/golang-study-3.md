@@ -17,7 +17,7 @@ categories:
   golang中定义函数使用func关键字，实例如下：
 
 {% codeblock lang:go %}
-func helloWorld(param int) (result,err){
+func helloWorld(param int) (result string, err error) {
   // TODO anything
   return nil
 }

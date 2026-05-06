@@ -87,10 +87,11 @@ db.Model(&user).Where("id in ?", params).Find(&user)
 db.Model(&user).Not("id = ?", 1).Find(&user)
 // sql:SELECT * FROM user WHERE id <> 1
 
-// Or方法需要和其他条件配合使用才行
+// Or方法：单独使用时等同于Where，与其他条件组合时生成OR条件
 db.Model(&user).Or("id = ?", 1).Find(&user)
 // sql:SELECT * FROM user WHERE id = 1
 
+// Or与Not配合使用
 db.Model(&user).Or("id = ?", 1).Not("id = ?", 1).Find(&user)
 // sql:SELECT * FROM user WHERE NOT id = 1 OR id = 1
 {% endcodeblock %}
